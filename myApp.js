@@ -1,5 +1,15 @@
+var express=require('express');
+var app=express();
+var port = 3000;
 require('dotenv').config();
+var mongoose = require('mongoose');
+var bodyParser=require('body-parser');
 
+app.unsubscribe(bodyParser.urlencoded({extended: false}));
+
+app.get('/', (req,res) => {
+  res.send('Hello World ');
+})
 
 let Person;
 
@@ -68,3 +78,8 @@ exports.createManyPeople = createManyPeople;
 exports.removeById = removeById;
 exports.removeManyPeople = removeManyPeople;
 exports.queryChain = queryChain;
+
+
+app.listen(port,()=>{
+  console.log(`App listening on port: ${port}`);
+});
