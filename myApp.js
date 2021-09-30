@@ -3,22 +3,60 @@ var app=express();
 var port = 3000;
 require('dotenv').config();
 var mongoose = require('mongoose');
-var bodyParser=require('body-parser');
+//var bodyParser=require('body-parser');
 
-app.unsubscribe(bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.urlencoded({extended: false}));
+
+console.log(process.env.MONGO_URI);
+
+//mongoose.connect(process.env.MONGO_URI);
 
 app.get('/', (req,res) => {
   res.send('Hello World ');
 })
 
 let Person;
+const personSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  age: Number,
+  favoriteFoods: [String]
+})
+
+Person = mongoose.model('Person', personSchema);
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  var document = new Person({
+    name: 'Julie', 
+    age: 32, 
+    favoriteFoods: ['oatmeal', 'coffee', 'breakfast']});
+  document.save((err,data) => (err ? done(err) : done(null, data)));
 };
 
+var arrayOfPeople = [
+  {
+    name: 'Julie',
+    age: 32,
+    favoriteFoods: ['oatmeal', 'lentils', 'rice']
+  },
+  {
+    name: 'Michelle',
+    age: 36,
+    favoriteFoods: ['coffee', 'beans', 'steak']
+  },
+  {
+    name: 'Marsha',
+    age: 69,
+    favoriteFoods: ['yogurt', 'hot dogs', 'pizza']
+  },
+  {
+    name: 'John',
+    age: 71,
+    favoriteFoods: ['coconut', 'pepperoni']
+  }
+];
+
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, (err,data) => (err ? done(err) : done(null, data)));
 };
 
 const findPeopleByName = (personName, done) => {
