@@ -60,43 +60,48 @@ const createManyPeople = (arrayOfPeople, done) => {
 };
 
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({name: personName}, (err,data) => (err ? done(err) : done(null, data)));
 };
 
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({favoriteFoods: food}, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findById(personId, (err, data) => (err ? done(err) : done(null, data)));
+  console.log(data);
 };
 
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
-
-  done(null /*, data*/);
+  Person.findById(personId, (err, person) => {
+    if (err) return done(err);
+    
+    person.favoriteFoods.push(foodToAdd);
+    person.save((err, updatedPerson) => (err ? done(err) : done(null, updatedPerson)));
+  });
 };
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOneAndUpdate({name: personName}, {age: ageToSet}, {new: true}, (err, updatedPerson) => (err ? done(err) : done(null, updatedPerson)));
 };
 
 const removeById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findByIdAndRemove(personId, (err, dataRemoved) => (err? done(err) : done(null, dataRemoved)));
 };
 
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
 
-  done(null /*, data*/);
+  Person.remove({name: nameToRemove}, (err, outcomeJSON) => (err ? done(err) : done(null, outcomeJSON)));
 };
 
 const queryChain = (done) => {
-  const foodToSearch = "burrito";
+  const foodToSearch = "oatmeal";
 
-  done(null /*, data*/);
+  Person.find({favoriteFoods: foodToSearch}).sort({name: 'asc'}).limit(2).select('-age').exec((err, results) => (err ? done(err) : done(null, results)));
+  console.log(results);
 };
 
 /** **Well Done !!**
@@ -121,3 +126,5 @@ exports.queryChain = queryChain;
 app.listen(port,()=>{
   console.log(`App listening on port: ${port}`);
 });
+
+console.log(queryChain);
